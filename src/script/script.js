@@ -350,7 +350,6 @@ function popupEventHandler(event) {
   if(popup.classList.contains('popup_is-opened')) {
     if(event.target.classList.contains('popup')) {
       popupConstructor.close();
-      
     }
     if(event.key === 'Escape') {
       popupConstructor.close();
@@ -367,12 +366,12 @@ document.addEventListener('keydown', popupEventHandler);
 
 
 newCardButton.addEventListener('click', function() {
-  popupConstructor = new Popup(popup, newCardButton);
+  const popupConstructor = new Popup(popup, newCardButton);
   popupConstructor.open();
 });
 
 editButton.addEventListener('click', function() {
-  popupConstructor = new Popup(popup, editButton);
+  const popupConstructor = new Popup(popup, editButton);
   popupConstructor.open();
 })
 
