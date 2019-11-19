@@ -27,7 +27,6 @@ class Api {
     this.token = token;
     this.cohortId = cohortId;
   }
-
   getResponseData(res) {
     if (res.ok) {
       return res.json();
@@ -232,8 +231,7 @@ class Popup {
     this.buttonPressed = buttonPressed;
     this.popup
       .querySelector('.popup__close')
-      .addEventListener('click', this.close.bind(this));
-
+      .addEventListener('click', this.close.bind(this));      
     // то, что будет меняться в зависимости от нажатой кнопки.
     const popupTitle = this.popup.querySelector('.popup__title');
     const popupButton = this.popup.querySelector('.popup__button');
@@ -327,7 +325,6 @@ class Popup {
 
       nameError.textContent = name.validationMessage;
     }
-  
     if (url.validity.valid) {
       urlError.setAttribute('style', 'display: none');
       urlError.innerHTML = "";
@@ -358,19 +355,16 @@ function popupEventHandler(event) {
   popupLightbox.classList.remove('popup_is-opened');
 }
 
-
-
-
 document.addEventListener('mousedown', popupEventHandler);
 document.addEventListener('keydown', popupEventHandler); 
 
 
-newCardButton.addEventListener('click', function() {
+newCardButton.addEventListener('click', () => {
   const popupConstructor = new Popup(popup, newCardButton);
   popupConstructor.open();
 });
 
-editButton.addEventListener('click', function() {
+editButton.addEventListener('click', () => {
   const popupConstructor = new Popup(popup, editButton);
   popupConstructor.open();
 })
