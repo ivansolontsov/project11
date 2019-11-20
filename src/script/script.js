@@ -226,48 +226,12 @@ const cardListComponent = new CardList(cardContainer);
 cardListComponent.render();
 
 class Popup {
-  constructor(popup, buttonPressed) {
+  constructor(popup) {
     this.popup = popup;
-    this.buttonPressed = buttonPressed;
     this.popup
       .querySelector('.popup__close')
       .addEventListener('click', this.close.bind(this));      
     // то, что будет меняться в зависимости от нажатой кнопки.
-    const popupTitle = this.popup.querySelector('.popup__title');
-    const popupButton = this.popup.querySelector('.popup__button');
-    const popupFirstInput = popupForm.elements.name;
-    const popupSecondInput = popupForm.elements.link;
-
-    if(buttonPressed === newCardButton) {
-      popupTitle.textContent = "Новое место";
-      popupButton.classList.remove('popup__button-save');
-      popupButton.textContent = '+'; 
-      popupFirstInput.placeholder = "Название";
-      popupSecondInput.placeholder = "Ссылка на картинку";
-  
-      popupSecondInput.type = "url";
-      popupSecondInput.removeAttribute('minlength');
-      popupSecondInput.removeAttribute('maxlength');
-
-      popupForm.removeEventListener('submit', this.editProfileInformation);
-      popupForm.addEventListener('submit', this.addCardToContainer);
-    }
-    if(buttonPressed === editButton) {
-      popupTitle.textContent = "Редактировать профиль";
-      popupButton.classList.add('popup__button-save');
-      popupButton.textContent = 'Сохранить';
-      popupFirstInput.placeholder = "Имя";
-      popupSecondInput.placeholder = "О себе";
-      popupSecondInput.type = "text";
-      popupSecondInput.setAttribute('minlength', '2');
-      popupSecondInput.setAttribute('maxlength', '30');
-
-      popupFirstInput.value = authorName.textContent;
-      popupSecondInput.value = authorAbout.textContent;
-  
-      popupForm.removeEventListener('submit', this.addCardToContainer);
-      popupForm.addEventListener('submit', this.editProfileInformation);
-    }
     popupForm.addEventListener('input', this.validate);
   }
   open() {
@@ -276,34 +240,6 @@ class Popup {
   close() {
     this.popup.classList.remove('popup_is-opened');
     popupForm.reset();
-  }
-  addCardToContainer(event) {
-    event.preventDefault();
-
-    const name = popupForm.elements.name.value;
-    const link = popupForm.elements.link.value;
-
-    apiComponent.addCardToServer(name, link, popupButton)
-    .then(result => {
-      cardListComponent.addCard(result.name, result.link, result.likes.length, result._id, result.owner.name);
-      popupConstructor.close();
-    }).catch(err => {
-      console.log(err);
-    });
-  }
-  editProfileInformation(event) {
-    event.preventDefault(); 
-
-    const name = popupForm.elements.name;
-    const link = popupForm.elements.link;
-
-    apiComponent.patchUserInfo(name.value, link.value, popupButton)
-      .then(res => {
-          authorName.textContent = name.value;
-          authorAbout.textContent = link.value;
-          popupConstructor.close();
-      })
-      .catch((err) => console.log(err));
   }
   validate() {
     const name = popupForm.elements.name;
@@ -343,6 +279,86 @@ class Popup {
   }
 }
 
+class NewCardPopup extends Popup {
+  constructor(popup) {
+      super(popup);
+      this.popup = popup;
+      const popupTitle = this.popup.querySelector('.popup__title');
+      const popupButton = this.popup.querySelector('.popup__button');
+      const popupFirstInput = popupForm.elements.name;
+      const popupSecondInput = popupForm.elements.link;
+
+      popupTitle.textContent = "Новое место";
+      popupButton.classList.remove('popup__button-save');
+      popupButton.textContent = '+'; 
+      popupFirstInput.placeholder = "Название";
+      popupSecondInput.placeholder = "Ссылка на картинку";
+  
+      popupSecondInput.type = "url";
+      popupSecondInput.removeAttribute('minlength');
+      popupSecondInput.removeAttribute('maxlength');
+
+      popupForm.removeEventListener('submit', this.editProfileInformation);
+      popupForm.addEventListener('submit', this.addCardToContainer);
+  }
+  addCardToContainer(event) {
+    event.preventDefault();
+
+    const name = popupForm.elements.name.value;
+    const link = popupForm.elements.link.value;
+
+    apiComponent.addCardToServer(name, link, popupButton)
+    .then(result => {
+      cardListComponent.addCard(result.name, result.link, result.likes.length, result._id, result.owner.name);
+      popupConstructor.close();
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+}
+
+class ProfilePopup extends Popup {
+  constructor(popup) {
+    super(popup);
+    this.popup = popup;
+    const popupTitle = this.popup.querySelector('.popup__title');
+    const popupButton = this.popup.querySelector('.popup__button');
+    const popupFirstInput = popupForm.elements.name;
+    const popupSecondInput = popupForm.elements.link;
+
+    popupTitle.textContent = "Редактировать профиль";
+    popupButton.classList.add('popup__button-save');
+    popupButton.textContent = 'Сохранить';
+    popupFirstInput.placeholder = "Имя";
+    popupSecondInput.placeholder = "О себе";
+    popupSecondInput.type = "text";
+    popupSecondInput.setAttribute('minlength', '2');
+    popupSecondInput.setAttribute('maxlength', '30');
+
+    popupFirstInput.value = authorName.textContent;
+    popupSecondInput.value = authorAbout.textContent;
+
+    popupForm.removeEventListener('submit', this.addCardToContainer);
+    popupForm.addEventListener('submit', this.editProfileInformation);
+  }
+  editProfileInformation(event) {
+    event.preventDefault(); 
+
+    const name = popupForm.elements.name;
+    const link = popupForm.elements.link;
+
+    apiComponent.patchUserInfo(name.value, link.value, popupButton)
+      .then(res => {
+          authorName.textContent = name.value;
+          authorAbout.textContent = link.value;
+          popupConstructor.close();
+      })
+      .catch((err) => console.log(err));
+  }
+}
+
+const popupConstructor = new Popup(popup);
+
 function popupEventHandler(event) { 
   if(popup.classList.contains('popup_is-opened')) {
     if(event.target.classList.contains('popup')) {
@@ -360,12 +376,12 @@ document.addEventListener('keydown', popupEventHandler);
 
 
 newCardButton.addEventListener('click', () => {
-  const popupConstructor = new Popup(popup, newCardButton);
+  const newCardPopupConstructor = new newCardPopup(popup);
   popupConstructor.open();
 });
 
 editButton.addEventListener('click', () => {
-  const popupConstructor = new Popup(popup, editButton);
+  const editProfilePopupConstructor = new ProfilePopup(popup);
   popupConstructor.open();
 })
 
