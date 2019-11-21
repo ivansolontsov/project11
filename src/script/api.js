@@ -1,4 +1,4 @@
-export class Api {
+  class Api {
     constructor(ip, token, cohortId) { // чтобы каждый раз не вводить токен и айди
       this.ip = ip;
       this.token = token;
@@ -83,3 +83,9 @@ export class Api {
       });
     }
   }
+  
+  const serverUrl = NODE_ENV === 'development' ? 'http://praktikum.tk' : 'https://praktikum.tk';
+  const apiComponent = new Api(serverUrl,'b7462041-f41b-4c91-8efa-ceb04012fa87', 'cohort4');
+
+
+  export {Api, apiComponent};

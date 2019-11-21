@@ -1,3 +1,5 @@
+import {apiComponent} from './api.js';
+
 export class Card {
     constructor(name, link, likesAmount, cardId, cardOwner) {
       this.name = name;

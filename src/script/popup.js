@@ -4,6 +4,10 @@ const popupButton = popup.querySelector('.popup__button');
 const authorName = document.querySelector('.user-info__name');
 const authorAbout = document.querySelector('.user-info__job');
 
+
+import {apiComponent} from './api.js';
+import {cardListComponent} from './cardlist.js';
+
 class Popup {
     constructor(popup) {
       this.popup = popup;
@@ -135,7 +139,7 @@ class Popup {
         .catch((err) => console.log(err));
     }
   }
+  const popupConstructor = new Popup(popup);
   
-
   export {Popup, NewCardPopup, ProfilePopup};
   

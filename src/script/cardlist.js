@@ -1,7 +1,8 @@
 import {Card} from './card.js';
-import {apiComponent, cardListComponent} from './script.js';
+import {apiComponent} from './api.js';
 
-export class CardList {
+
+ class CardList {
     constructor(elementContainer) {
         this.container = elementContainer;
       }
@@ -20,4 +21,9 @@ export class CardList {
     }
   }
   
+  const cardContainer = document.querySelector('.places-list');
+  const cardListComponent = new CardList(cardContainer);
+
+  export {CardList, cardListComponent};
+
   
